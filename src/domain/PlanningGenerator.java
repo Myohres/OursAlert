@@ -1,105 +1,165 @@
 package domain;
 
+import data.InfosProd;
+import data.PlanningLot;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PlanningGenerator {
 
-    public void sessionGenerator() {
+    public void planningGenerator() {
+        Calendar calendar = initialisation();
+        InfosProd infosProd = inputClient();
+        infosProd = calculateAndConversion(infosProd);
+        displayInfosProd(infosProd);
+        PlanningLot planningLot = listGenerator(infosProd, calendar);
+        displayList(planningLot);
+        newSession();
+    }
 
-        /* initialisation */
+    public Calendar initialisation() {
         System.out.println("");
         System.out.println("***** Initialisation *****");
         System.out.println("");
         Date date = new Date();
         Calendar dateToday = Calendar.getInstance();
-        int hour = dateToday.get(Calendar.HOUR);
-        int minute = dateToday.get(Calendar.MINUTE);
-        int seconde = dateToday.get(Calendar.SECOND);
-        System.out.println("Bienvenue agent");
+        SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm");
+        String time = myFormat.format(dateToday.getTime());
         System.out.println("Nous sommes le : " + date);
-        System.out.println("Prise de poste effective à : " + hour + ":" + minute + ":" + seconde + " ");
+        System.out.println("Debut de session : " +time);
+        return dateToday;
+    }
 
-
-        /* Input client */
+    public InfosProd inputClient() {
+        InfosProd infosProd = new InfosProd();
         System.out.println("");
         System.out.println("***** Entrées informations *****");
         System.out.println("");
+
         System.out.println("Veuillez saisir le montant total de produits");
         Scanner sc = new Scanner(System.in);
         double qteProductTotale = sc.nextInt();
         System.out.println("Montant total de produits : " + qteProductTotale);
+
         System.out.println("Veuillez saisir le nombre de produits pour un lot");
         sc = new Scanner(System.in);
         double qteParLot = sc.nextInt();
         System.out.println("Montant de produits par lot : " + qteParLot);
+
         System.out.println("Veuillez saisir le temps alloué en minutes pour la production par lot");
         sc = new Scanner(System.in);
         double tmpParLotMn = sc.nextInt();
         System.out.println("Le temps alloué en minutes pour la production par lot est de : " + tmpParLotMn + " mn");
 
+        infosProd.setQteProductTotale(qteProductTotale);
+        infosProd.setQteParLot(qteParLot);
+        infosProd.setTmpParLotMn(tmpParLotMn);
+        return infosProd;
+    }
 
-        /* Calculs et conversions */
+    public InfosProd calculateAndConversion(InfosProd infosProd) {
+        double tmpParLotMn = infosProd.getTmpParLotMn();
+        double qteProductTotale = infosProd.getQteProductTotale();
+        double qteParLot = infosProd.getQteParLot();
+
+        double tmpTotalMinute = (tmpParLotMn * qteProductTotale) / qteParLot;
+        long tmpTotalMilliSec = (long) tmpTotalMinute * 60 * 1000;
+        double nbPointage = qteProductTotale / qteParLot;
+        double tmpEntrePointageMinute = tmpTotalMinute / nbPointage;
+        long tmpEntrePointageMillisec = (long) tmpEntrePointageMinute * 60 * 1000;
+
         System.out.println("");
         System.out.println("***** Calculs et conversions *****");
         System.out.println("");
-        /* calcul temps total */
-        double tmpTotalMn = (tmpParLotMn * qteProductTotale) / qteParLot;
+        System.out.println("Calculs en cours....");
+
+        infosProd.setTmpTotalMinute(tmpTotalMinute);
+        infosProd.setTmpTotalMilliSec(tmpTotalMilliSec);
+        infosProd.setNbPointage(nbPointage);
+        infosProd.setTmpEntrePointageMinute(tmpEntrePointageMinute);
+        infosProd.setTmpEntrePointageMillisec(tmpEntrePointageMillisec);
+        return infosProd;
+    }
+
+    public void displayInfosProd(InfosProd infosProd) {
+        double tmpTotalMn = infosProd.getTmpTotalMinute();
+        double nbPointage = infosProd.getNbPointage();
+        double tmpEntrePointageMin = infosProd.getTmpEntrePointageMinute();
+
+        System.out.println("");
+        System.out.println("***** Affichage infos Prod *****");
+        System.out.println("");
         System.out.println("Le temps de travail total est de : " + tmpTotalMn + " mn");
-        /*Convertion tps totale en milliseconde */
-        long tmpTotalMilliSec = (long) tmpTotalMn * 60 * 1000;
-        System.out.println("temps total en millisecondes : " + tmpTotalMilliSec);
-        /* calcul nombre de pointage */
-        double nbPointage = qteProductTotale / qteParLot;
         System.out.println("Il y a " + nbPointage + " pointage(s) à faire");
-        /* calcul du temps entre chaque pointage */
-        double tmpEntrePointageMin = tmpTotalMn / nbPointage;
         System.out.println("Il y a un pointage toutes les " + tmpEntrePointageMin + " mn");
-        /* Conversion tps entre chaque pointage */
-        long tmpEntrePointageMillisec = (long) tmpEntrePointageMin * 60 * 1000;
-        System.out.println("temps entre chaque pointage en millisecondes : " + tmpEntrePointageMillisec);
+    }
 
+    public PlanningLot listGenerator(InfosProd infosProd, Calendar calendar) {
+        long tmpTotalMilliSec = infosProd.getTmpTotalMilliSec();
+        long tmpEntrePointageMillisec = infosProd.getTmpEntrePointageMillisec();
+        PlanningLot planningLot = new PlanningLot();
+        List<Calendar> listPointage = new ArrayList<>();
 
-        /* Générateur de list */
         System.out.println("");
         System.out.println("***** Génération de liste *****");
         System.out.println("");
         System.out.println("Calcul du planning en cour....");
-        List<Calendar> listPointage = new ArrayList<>();
-        Calendar startTimePointage = Calendar.getInstance();
+
         long timeSpendToWorkMilliSec = 0;
         while (timeSpendToWorkMilliSec <= tmpTotalMilliSec) {
-            long timeWhenPointage = startTimePointage.getTimeInMillis() + timeSpendToWorkMilliSec;
+            long timeWhenPointage = calendar.getTimeInMillis() + timeSpendToWorkMilliSec;
             Calendar newTimePointage = Calendar.getInstance();
             newTimePointage.setTimeInMillis(timeWhenPointage);
             listPointage.add(newTimePointage);
             timeSpendToWorkMilliSec = timeSpendToWorkMilliSec + tmpEntrePointageMillisec;
-
         }
+        planningLot.setHourPointageList(listPointage);
+        planningLot.setHourStart(listPointage.get(0));
+        planningLot.setHourEnd(listPointage.get(listPointage.size() - 1));
+        return planningLot;
+    }
 
-
-        /* affichage de la liste */
+    public void displayList(PlanningLot planningLot) {
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm");
+        int planningLotSize = planningLot.getHourPointageList().size();
         System.out.println("");
         System.out.println("***** Affichage de la liste *****");
         System.out.println("");
-        String time = myFormat.format(listPointage.get(0).getTime());
-        System.out.println("Heure début : "
-                + time);
-        System.out.println("Heure fin : "
-                + listPointage.get(listPointage.size() - 1).get(Calendar.HOUR) + "h"
-                + listPointage.get(listPointage.size() - 1).get(Calendar.MINUTE));
+        String time = myFormat.format(planningLot.getHourPointageList().get(0).getTime());
+        System.out.println("Heure début : " + time);
+        time = myFormat.format(planningLot.getHourPointageList().get(planningLotSize - 1).getTime());
+        System.out.println("Heure fin : " + time);
         System.out.println("");
         System.out.println("Heures pointages : ");
         int i;
-        for (i = 1; listPointage.size() > i; i++) {
-            String time1 = myFormat.format(listPointage.get(i).getTime());
+        for (i = 1; planningLotSize > i; i++) {
+            String time1 = myFormat.format(planningLot.getHourPointageList().get(i).getTime());
             System.out.println(
                     "Pointage n°" + i + " : " + time1
-                    );
+            );
         }
+    }
 
-        System.out.println("");
-        System.out.println("***** Fermeture programme *****");
+    public void newSession() {
+        boolean continueApp = true;
+        while(continueApp) {
+            System.out.println("");
+            System.out.println("***** Nouvelle session ? ******");
+            System.out.println("");
+            System.out.println("0: oui");
+            System.out.println("1: non");
+            Scanner sc = new Scanner(System.in);
+            int choice = sc.nextInt();
+            System.out.println("");
+            if (choice == 0) {
+                System.out.println("Nouvelle session");
+                planningGenerator();
+                continueApp = true;
+            } else {
+                System.out.println("***** Fermeture programme *****");
+                continueApp = false;
+            }
+        }
     }
 }

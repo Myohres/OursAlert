@@ -3,11 +3,10 @@ package data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Calendar;
 
 @Getter
 @Setter
-public class Horaire {
+public class HourWork {
 
     private int dayWorkNumber;
     private int amPm;

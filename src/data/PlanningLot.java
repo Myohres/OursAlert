@@ -10,5 +10,7 @@ import java.util.List;
 @Setter
 public class PlanningLot {
 
-    List<Calendar> scoreList;
+    private Calendar hourStart;
+    private Calendar hourEnd;
+    private List<Calendar> hourPointageList;
 }

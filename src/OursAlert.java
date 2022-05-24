@@ -5,10 +5,10 @@ public class OursAlert {
 
     public static void main(String[] Args) {
         DayCalculator dayCalculator = new DayCalculator();
-        dayCalculator.horaireCalculator();
-        dayCalculator.displayHoraire();
+        dayCalculator.hourWorkGenerator();
+        dayCalculator.hourWorkDisplay();
 
         PlanningGenerator planningGenerator = new PlanningGenerator();
-        planningGenerator.sessionGenerator();
+        planningGenerator.planningGenerator();
     }
 }

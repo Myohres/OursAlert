@@ -4,89 +4,86 @@ import constant.AmPm;
 import constant.hour.Friday;
 import constant.hour.Week;
 import constant.hour.Weekend;
-import data.Horaire;
+import data.HourWork;
 
 import java.util.Calendar;
 
 public class DayCalculator {
 
-   private final Horaire horaire = new Horaire();
+   private final HourWork hourWork = new HourWork();
    private final Calendar calendar = Calendar.getInstance();
 
-   public void displayHoraire() {
+   public void hourWorkDisplay() {
        System.out.println("Affichage horaire");
-       System.out.println("Jour n° " + horaire.getDayWorkNumber());
-       if (horaire.getAmPm() == 0) {
+       System.out.println("Jour n° " + hourWork.getDayWorkNumber());
+       if (hourWork.getAmPm() == 0) {
            System.out.println("Horaires du matin");
        } else {
            System.out.println("Horaires de l'après midi");
        }
-       System.out.println("Heure début poste : " + horaire.getHourWorkStart());
-       System.out.println("Heure fin poste : " + horaire.getHourWorkEnd());
+       System.out.println("Heure début poste : " + hourWork.getHourWorkStart());
+       System.out.println("Heure fin poste : " + hourWork.getHourWorkEnd());
    }
 
-    public Horaire horaireCalculator() {
+    public void hourWorkGenerator() {
         int numberDay = calendar.get(Calendar.DAY_OF_WEEK);
         switch (numberDay) {
             case 1, 2, 3, 4 -> {
-                matinOuApresMidiSemaine(calendar);
-                horaire.setDayWorkNumber(numberDay);
-                return horaire;
+                morningOrAfternoonWeek(calendar);
+                hourWork.setDayWorkNumber(numberDay);
             }
             case 5 -> {
-                matinOuApresMidiVendredi(calendar);
-                horaire.setDayWorkNumber(numberDay);
-                return horaire;
+                morningOrAfternoonFriday(calendar);
+                hourWork.setDayWorkNumber(numberDay);
             }
             case 6, 7 -> {
-                matinOuApresMidiWeekend(calendar);
-                horaire.setDayWorkNumber(numberDay);
-                return horaire;
+                morningOrAfternoonWeekend(calendar);
+                hourWork.setDayWorkNumber(numberDay);
             }
             default -> throw new IllegalStateException(
                     "Invalid day : " + numberDay);
         }
     }
 
-    public void matinOuApresMidiSemaine(final Calendar calendar) {
+    public void morningOrAfternoonWeek(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR);
         if (dayHour <= Week.WORK_HOUR_AM_END) {
-            horaire.setAmPm(AmPm.AM);
-            horaire.setHourWorkStart(Week.WORK_HOUR_AM_START);
-            horaire.setHourWorkEnd(Week.WORK_HOUR_AM_END);
+            hourWork.setAmPm(AmPm.AM);
+            hourWork.setHourWorkStart(Week.WORK_HOUR_AM_START);
+            hourWork.setHourWorkEnd(Week.WORK_HOUR_AM_END);
 
         } else {
-            horaire.setAmPm(AmPm.PM);
-            horaire.setHourWorkStart(Week.WORK_HOUR_PM_START);
-            horaire.setHourWorkEnd(Week.WORK_HOUR_PM_END);
+            hourWork.setAmPm(AmPm.PM);
+            hourWork.setHourWorkStart(Week.WORK_HOUR_PM_START);
+            hourWork.setHourWorkEnd(Week.WORK_HOUR_PM_END);
         }
     }
 
-    public void matinOuApresMidiVendredi(final Calendar calendar) {
+    public void morningOrAfternoonFriday(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR);
         if (dayHour <= Friday.WORK_HOUR_AM_END) {
-            horaire.setAmPm(AmPm.AM);
-            horaire.setHourWorkStart(Friday.WORK_HOUR_AM_START);
-            horaire.setHourWorkEnd(Friday.WORK_HOUR_AM_END);
+            hourWork.setAmPm(AmPm.AM);
+            hourWork.setHourWorkStart(Friday.WORK_HOUR_AM_START);
+            hourWork.setHourWorkEnd(Friday.WORK_HOUR_AM_END);
 
         } else {
-            horaire.setAmPm(AmPm.PM);
-            horaire.setHourWorkStart(Friday.WORK_HOUR_PM_START);
-            horaire.setHourWorkEnd(Friday.WORK_HOUR_PM_END);
+            hourWork.setAmPm(AmPm.PM);
+            hourWork.setHourWorkStart(Friday.WORK_HOUR_PM_START);
+            hourWork.setHourWorkEnd(Friday.WORK_HOUR_PM_END);
         }
     }
 
-    public void matinOuApresMidiWeekend(final Calendar calendar) {
+    public void morningOrAfternoonWeekend(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR);
         if (dayHour <= Weekend.WORK_HOUR_AM_END) {
-            horaire.setAmPm(AmPm.AM);
-            horaire.setHourWorkStart(Weekend.WORK_HOUR_AM_START);
-            horaire.setHourWorkEnd(Weekend.WORK_HOUR_AM_END);
+            hourWork.setAmPm(AmPm.AM);
+            hourWork.setHourWorkStart(Weekend.WORK_HOUR_AM_START);
+            hourWork.setHourWorkEnd(Weekend.WORK_HOUR_AM_END);
 
         } else {
-            horaire.setAmPm(AmPm.PM);
-            horaire.setHourWorkStart(Weekend.WORK_HOUR_PM_START);
-            horaire.setHourWorkEnd(Weekend.WORK_HOUR_PM_END);
+            hourWork.setAmPm(AmPm.PM);
+            hourWork.setHourWorkStart(Weekend.WORK_HOUR_PM_START);
+            hourWork.setHourWorkEnd(Weekend.WORK_HOUR_PM_END);
         }
     }
 }
