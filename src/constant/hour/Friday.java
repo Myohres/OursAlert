@@ -22,13 +22,13 @@ public class Friday {
     public static final int LONG_PAUSE_HOUR_AM_END = 10;
     public static final int LONG_PAUSE_MIN_AM_END = 30;
 
-    public static final int SHORT_PAUSE_HOUR_PM_START = 1;
+    public static final int SHORT_PAUSE_HOUR_PM_START = 13;
     public static final int SHORT_PAUSE_MIN_PM_START = 30;
-    public static final int SHORT_PAUSE_HOUR_PM_END = 1;
+    public static final int SHORT_PAUSE_HOUR_PM_END = 13;
     public static final int SHORT_PAUSE_MIN_PM_END = 40;
 
-    public static final int LONG_PAUSE_HOUR_PM_START = 3;
+    public static final int LONG_PAUSE_HOUR_PM_START = 15;
     public static final int LONG_PAUSE_MIN_PM_START = 30;
-    public static final int LONG_PAUSE_HOUR_PM_END = 4;
+    public static final int LONG_PAUSE_HOUR_PM_END = 16;
     public static final int LONG_PAUSE_MIN_PM_END = 0;
 }
