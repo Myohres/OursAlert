@@ -8,15 +8,17 @@ import lombok.Setter;
 public class InfoProd {
 
     double nbProdTotal;
-    double nbByLot;
-    double timeByLotMn;
+    double nbProdByLot;
 
-    double tmpTotalMinute;
-    long tmpTotalMilliSec;
+    double durationByLotMn;
+    long durationByLotMilliSec;
 
     double nbCheckTotal;
 
-    double timeByCheckMn;
-    long timeByCheckMilliSec;
+    double durationWorkTotalMn;
+    long durationWorkTotalMilliSec;
+
+
+
 
 }

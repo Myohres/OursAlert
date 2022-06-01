@@ -11,4 +11,6 @@ public class Pause {
 
     Calendar hourPauseStart;
     Calendar hourPauseEnd;
+    long durationPauseMilliSec;
+    int durationPauseMn;
 }
