@@ -1,4 +1,4 @@
-package domain.generator;
+package domain.service;
 
 import data.InfoProd;
 import data.Pause;

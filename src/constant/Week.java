@@ -1,4 +1,4 @@
-package constant.hour;
+package constant;
 
 public class Week {
 

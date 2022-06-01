@@ -4,10 +4,10 @@ import data.CheckListFull;
 import data.InfoProd;
 import data.Pause;
 import data.WorkHour;
-import domain.generator.CheckListService;
-import domain.generator.PauseListService;
-import domain.generator.WorkHourService;
-import domain.generator.InfoProdService;
+import domain.service.CheckListService;
+import domain.service.PauseListService;
+import domain.service.WorkHourService;
+import domain.service.InfoProdService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,7 +29,6 @@ public class InteractiveShell {
         System.out.println("");
         Date date = new Date();
         Calendar dateToday = Calendar.getInstance();
-        dateToday.set(Calendar.HOUR_OF_DAY, 7);
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm");
         String time = myFormat.format(dateToday.getTime());
         System.out.println("Nous sommes le : " + date);

@@ -1,8 +1,8 @@
-package domain.generator;
+package domain.service;
 
-import constant.hour.Friday;
-import constant.hour.Week;
-import constant.hour.Weekend;
+import constant.Friday;
+import constant.Week;
+import constant.Weekend;
 
 import data.WorkHour;
 
@@ -11,10 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class WorkHourService {
-
-    public void run() {
-
-    }
 
     public void workHourDisplay(final WorkHour workHour) {
         SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE");
@@ -67,17 +63,13 @@ public class WorkHourService {
         int numberDay = calendarInitial.get(Calendar.DAY_OF_WEEK);
         WorkHour workHour;
         switch (numberDay) {
-            case  2, 3, 4, 5 -> {
-                workHour = sendHourWeek(calendarInitial);
-            }
-            case 6 -> {
-                workHour = sendHourFriday(calendarInitial);
-            }
-            case 7, 1 -> {
-                workHour = sendHourWeekend(calendarInitial);
-            }
-            default -> throw new IllegalStateException(
-                    "Invalid day : " + numberDay);
+            case  2, 3, 4, 5 -> workHour = sendHourWeek(calendarInitial);
+
+            case 6 -> workHour = sendHourFriday(calendarInitial);
+
+            case 7, 1 -> workHour = sendHourWeekend(calendarInitial);
+
+            default -> throw new IllegalStateException("Invalid day : " + numberDay);
         }
         workHour.setCalHourSessionStart(calendarInitial);
         return workHour;

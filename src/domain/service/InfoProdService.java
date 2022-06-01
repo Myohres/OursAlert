@@ -1,17 +1,10 @@
-package domain.generator;
+package domain.service;
 
 import data.InfoProd;
 
 import java.util.Scanner;
 
 public class InfoProdService {
-
-    public InfoProd run() {
-        InfoProd infoProd = infoProdCollector();
-        infoProd = calculateAndConversion(infoProd);
-        displayInfosProd(infoProd);
-        return infoProd;
-    }
 
     public InfoProd infoProdCollector() {
         InfoProd infoProd = new InfoProd();

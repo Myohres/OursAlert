@@ -1,4 +1,4 @@
-package domain.generator;
+package domain.service;
 
 import data.CheckListFull;
 import data.InfoProd;
@@ -35,9 +35,9 @@ public class CheckListService {
         System.out.println("");
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm");
         System.out.println("Durée par check " + durationByLotMilliSec / 60 / 1000 + "mn");
-        String hourSessionStartDisplay = myFormat.format(hourSessionStart);
+        String hourSessionStartDisplay = myFormat.format(hourSessionStart.getTime());
         System.out.println("Heure début session " + hourSessionStartDisplay);
-        String hourSessionEndDisplay = myFormat.format(hourSessionEnd);
+        String hourSessionEndDisplay = myFormat.format(hourSessionEnd.getTime());
         System.out.println("Heure fin session " + hourSessionEndDisplay);
         System.out.println("");
 
@@ -86,9 +86,9 @@ public class CheckListService {
             checkList.add(hourNextCheck);
             nBCheckDone++;
 
-            String calHourRefDisplay = myFormat.format(hourRef);
+            String calHourRefDisplay = myFormat.format(hourRef.getTime());
             System.out.println("cal hourRef         " + calHourRefDisplay + " pointage " + nBCheckDone);
-            String calHourToCheckDisplay = myFormat.format(hourNextCheck);
+            String calHourToCheckDisplay = myFormat.format(hourNextCheck.getTime());
             System.out.println("cal hourtocheck  " + calHourToCheckDisplay + " pointage " + nBCheckDone);
             System.out.println("");
         }
