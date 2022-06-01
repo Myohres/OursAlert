@@ -10,12 +10,9 @@ import java.util.List;
 @Setter
 public class CheckListFull {
 
-    private Calendar hourStart;
-    private Calendar hourEnd;
-    private Calendar hourPauseOneStart;
-    private Calendar hourPauseOneEnd;
-    private Calendar hourPauseTwoStart;
-    private Calendar hourPauseTwoEnd;
+    private Calendar hourSessionStart;
+    private Calendar hourSessionEnd;
+    private List<Pause> pauseList;
     private List<Calendar> checkList;
 
 }
