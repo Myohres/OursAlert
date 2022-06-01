@@ -24,7 +24,6 @@ public class WorkHourService {
 
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
         String hourSessionStartDisplay = hourFormat.format(workHour.getCalHourSessionStart().getTime());
-        String hourSessionEndDisplay = /*hourFormat.format(workHour.getCalHourSessionEnd().getTime());*/ "";
         String hourPlanningStartDisplay = hourFormat.format(workHour.getCalHourPlanningStart().getTime());
         String hourPlanningEndDisplay = hourFormat.format(workHour.getCalHourPlanningEnd().getTime());
         String hourShortPauseStartDisplay = hourFormat.format(workHour.getCalHourShortPauseStart().getTime());
@@ -40,7 +39,7 @@ public class WorkHourService {
         System.out.println("Horaires " + morningOrAfternoonDisplay);
         System.out.println("");
         System.out.println("Heure de début session : " + hourSessionStartDisplay);
-        System.out.println("heure de fin de session : " + hourSessionEndDisplay);
+        System.out.println("heure de fin de session : calcul en cour" );
         System.out.println("");
         System.out.println("Heure de début planning : " + hourPlanningStartDisplay);
         System.out.println("heure de fin de  planning : " + hourPlanningEndDisplay);
