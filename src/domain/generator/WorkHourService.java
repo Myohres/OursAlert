@@ -1,44 +1,41 @@
-package domain;
+package domain.generator;
 
 import constant.hour.Friday;
 import constant.hour.Week;
 import constant.hour.Weekend;
+
 import data.WorkHour;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class HourTimeCalculator {
+public class WorkHourService {
 
-    private final Calendar calendarInitial = Calendar.getInstance();
+    public void run() {
 
-    public WorkHour run() {
-        WorkHour workHour = workHourGenerator();
-        workHourDisplay(workHour);
-        return workHour;
     }
 
     public void workHourDisplay(final WorkHour workHour) {
         SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE");
-        String dayNameDisplay = dayNameFormat.format(workHour.getCalendarInitial().getTime());
-
+        String dayNameDisplay = dayNameFormat.format(workHour.getCalHourSessionStart().getTime());
         String morningOrAfternoonDisplay;
-        if (calendarInitial.get(Calendar.AM_PM) == Calendar.AM) {
+        if (workHour.getCalHourSessionStart().get(Calendar.AM_PM) == Calendar.AM) {
             morningOrAfternoonDisplay = "du matin";
         } else {
             morningOrAfternoonDisplay = "de l'après midi";
         }
 
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
-        String hourWorkStartDisplay = hourFormat.format(workHour.getCalHourWorkStart().getTime());
+        String hourSessionStartDisplay = hourFormat.format(workHour.getCalHourSessionStart().getTime());
+        String hourSessionEndDisplay = /*hourFormat.format(workHour.getCalHourSessionEnd().getTime());*/ "";
+        String hourPlanningStartDisplay = hourFormat.format(workHour.getCalHourPlanningStart().getTime());
+        String hourPlanningEndDisplay = hourFormat.format(workHour.getCalHourPlanningEnd().getTime());
         String hourShortPauseStartDisplay = hourFormat.format(workHour.getCalHourShortPauseStart().getTime());
         String hourShortPauseEndDisplay = hourFormat.format(workHour.getCalHourShortPauseEnd().getTime());
         String hourLongPauseStartDisplay = hourFormat.format(workHour.getCalHourLongPauseStart().getTime());
         String hourLongPauseEndDisplay = hourFormat.format(workHour.getCalHourLongPauseEnd().getTime());
-        String hourWorkEndDisplay = hourFormat.format(workHour.getCalHourWorkEnd().getTime());
+
 
         System.out.println("");
         System.out.println("*** WorkHourDisplay ***");
@@ -46,20 +43,22 @@ public class HourTimeCalculator {
         System.out.println("Jour : " + dayNameDisplay);
         System.out.println("Horaires " + morningOrAfternoonDisplay);
         System.out.println("");
-        System.out.println("Heure de début travail : " + hourWorkStartDisplay);
+        System.out.println("Heure de début session : " + hourSessionStartDisplay);
+        System.out.println("heure de fin de session : " + hourSessionEndDisplay);
         System.out.println("");
-        System.out.println("Heure de début de pause courte : " + hourShortPauseStartDisplay);
-        System.out.println("heure fin de pause courte : " + hourShortPauseEndDisplay);
+        System.out.println("Heure de début planning : " + hourPlanningStartDisplay);
+        System.out.println("heure de fin de  planning : " + hourPlanningEndDisplay);
         System.out.println("");
-        System.out.println("heure de début de pause longue : " + hourLongPauseStartDisplay);
-        System.out.println("Heure de fin de pause longue : " + hourLongPauseEndDisplay);
+        System.out.println("Heure de début de pause 1: " + hourShortPauseStartDisplay);
+        System.out.println("heure fin de pause 1 : " + hourShortPauseEndDisplay);
         System.out.println("");
-        System.out.println("heure de fin de travail : " + hourWorkEndDisplay);
+        System.out.println("heure de début de pause 2 : " + hourLongPauseStartDisplay);
+        System.out.println("Heure de fin de pause 2 : " + hourLongPauseEndDisplay);
+        System.out.println("");
     }
 
 
-
-    public WorkHour workHourGenerator() {
+    public WorkHour workHourGenerator(Calendar calendarInitial) {
         System.out.println("");
         System.out.println("*** WorkHourGenerator ***");
         System.out.println();
@@ -80,48 +79,49 @@ public class HourTimeCalculator {
             default -> throw new IllegalStateException(
                     "Invalid day : " + numberDay);
         }
-        workHour.setCalendarInitial(calendarInitial);
+        workHour.setCalHourSessionStart(calendarInitial);
         return workHour;
     }
 
     public WorkHour sendHourWeek(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR_OF_DAY);
-        Calendar calHourWorkStart = Calendar.getInstance();
-        Calendar calHourWorkEnd = Calendar.getInstance();
+        Calendar calHourPlanningStart = Calendar.getInstance();
+        Calendar calHourPlanningEnd = Calendar.getInstance();
         Calendar calHourShortPauseStart = Calendar.getInstance();
         Calendar calHourShortPauseEnd = Calendar.getInstance();
         Calendar calHourLongPauseStart = Calendar.getInstance();
         Calendar calHourLongPauseEnd = Calendar.getInstance();
         WorkHour workHour = new WorkHour();
         if (dayHour <= Week.WORK_HOUR_AM_END) {
-            calHourWorkStart.set(Calendar.HOUR, Week.WORK_HOUR_AM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Week.WORK_MIN_AM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Week.WORK_HOUR_AM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Week.WORK_MIN_AM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Week.SHORT_PAUSE_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Week.WORK_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Week.WORK_MIN_AM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Week.WORK_HOUR_AM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Week.WORK_MIN_AM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Week.SHORT_PAUSE_HOUR_AM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Week.SHORT_PAUSE_MIN_AM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Week.SHORT_PAUSE_HOUR_AM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Week.SHORT_PAUSE_HOUR_AM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Week.SHORT_PAUSE_MIN_AM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Week.LONG_PAUSE_HOUR_AM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Week.LONG_PAUSE_HOUR_AM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Week.LONG_PAUSE_MIN_AM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Week.LONG_PAUSE_HOUR_AM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Week.LONG_PAUSE_HOUR_AM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Week.LONG_PAUSE_MIN_AM_END);
         } else {
-            calHourWorkStart.set(Calendar.HOUR, Week.WORK_HOUR_PM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Week.WORK_MIN_PM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Week.WORK_HOUR_PM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Week.WORK_MIN_PM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Week.SHORT_PAUSE_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.AM_PM, Calendar.PM);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Week.WORK_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Week.WORK_MIN_PM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Week.WORK_HOUR_PM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Week.WORK_MIN_PM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Week.SHORT_PAUSE_HOUR_PM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Week.SHORT_PAUSE_MIN_PM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Week.SHORT_PAUSE_HOUR_PM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Week.SHORT_PAUSE_HOUR_PM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Week.SHORT_PAUSE_MIN_PM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Week.LONG_PAUSE_HOUR_PM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Week.LONG_PAUSE_HOUR_PM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Week.LONG_PAUSE_MIN_PM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Week.LONG_PAUSE_HOUR_PM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Week.LONG_PAUSE_HOUR_PM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Week.LONG_PAUSE_MIN_PM_END);
         }
-        workHour.setCalHourWorkStart(calHourWorkStart);
-        workHour.setCalHourWorkEnd(calHourWorkEnd);
+        workHour.setCalHourPlanningStart(calHourPlanningStart);
+        workHour.setCalHourPlanningEnd(calHourPlanningEnd);
         workHour.setCalHourShortPauseStart(calHourShortPauseStart);
         workHour.setCalHourShortPauseEnd(calHourShortPauseEnd);
         workHour.setCalHourLongPauseStart(calHourLongPauseStart);
@@ -131,43 +131,42 @@ public class HourTimeCalculator {
 
     public WorkHour sendHourFriday(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR_OF_DAY);
-        Calendar calHourWorkStart = Calendar.getInstance();
-        Calendar calHourWorkEnd = Calendar.getInstance();
+        Calendar calHourPlanningStart = Calendar.getInstance();
+        Calendar calHourPlanningEnd = Calendar.getInstance();
         Calendar calHourShortPauseStart = Calendar.getInstance();
         Calendar calHourShortPauseEnd = Calendar.getInstance();
         Calendar calHourLongPauseStart = Calendar.getInstance();
         Calendar calHourLongPauseEnd = Calendar.getInstance();
         WorkHour workHour = new WorkHour();
         if (dayHour <= Friday.WORK_HOUR_AM_END) {
-            calHourWorkStart.set(Calendar.HOUR, Friday.WORK_HOUR_AM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Friday.WORK_MIN_AM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Friday.WORK_HOUR_AM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Friday.WORK_MIN_AM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Friday.SHORT_PAUSE_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Friday.WORK_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Friday.WORK_MIN_AM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Friday.WORK_HOUR_AM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Friday.WORK_MIN_AM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Friday.SHORT_PAUSE_HOUR_AM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Friday.SHORT_PAUSE_MIN_AM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Friday.SHORT_PAUSE_HOUR_AM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Friday.SHORT_PAUSE_HOUR_AM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Friday.SHORT_PAUSE_MIN_AM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Friday.LONG_PAUSE_HOUR_AM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Friday.LONG_PAUSE_HOUR_AM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Friday.LONG_PAUSE_MIN_AM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Friday.LONG_PAUSE_HOUR_AM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Friday.LONG_PAUSE_HOUR_AM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Friday.LONG_PAUSE_MIN_AM_END);
-
         } else {
-            calHourWorkStart.set(Calendar.HOUR, Friday.WORK_HOUR_PM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Friday.WORK_MIN_PM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Friday.WORK_HOUR_PM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Friday.WORK_MIN_PM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Friday.SHORT_PAUSE_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Friday.WORK_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Friday.WORK_MIN_PM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Friday.WORK_HOUR_PM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Friday.WORK_MIN_PM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Friday.SHORT_PAUSE_HOUR_PM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Friday.SHORT_PAUSE_MIN_PM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Friday.SHORT_PAUSE_HOUR_PM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Friday.SHORT_PAUSE_HOUR_PM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Friday.SHORT_PAUSE_MIN_PM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Friday.LONG_PAUSE_HOUR_PM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Friday.LONG_PAUSE_HOUR_PM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Friday.LONG_PAUSE_MIN_PM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Friday.LONG_PAUSE_HOUR_PM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Friday.LONG_PAUSE_HOUR_PM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Friday.LONG_PAUSE_MIN_PM_END);
         }
-        workHour.setCalHourWorkStart(calHourWorkStart);
-        workHour.setCalHourWorkEnd(calHourWorkEnd);
+        workHour.setCalHourPlanningStart(calHourPlanningStart);
+        workHour.setCalHourPlanningEnd(calHourPlanningEnd);
         workHour.setCalHourShortPauseStart(calHourShortPauseStart);
         workHour.setCalHourShortPauseEnd(calHourShortPauseEnd);
         workHour.setCalHourLongPauseStart(calHourLongPauseStart);
@@ -177,42 +176,42 @@ public class HourTimeCalculator {
 
     public WorkHour sendHourWeekend(final Calendar calendar) {
         int dayHour = calendar.get(Calendar.HOUR_OF_DAY);
-        Calendar calHourWorkStart = Calendar.getInstance();
-        Calendar calHourWorkEnd = Calendar.getInstance();
+        Calendar calHourPlanningStart = Calendar.getInstance();
+        Calendar calHourPlanningEnd = Calendar.getInstance();
         Calendar calHourShortPauseStart = Calendar.getInstance();
         Calendar calHourShortPauseEnd = Calendar.getInstance();
         Calendar calHourLongPauseStart = Calendar.getInstance();
         Calendar calHourLongPauseEnd = Calendar.getInstance();
         WorkHour workHour = new WorkHour();
         if (dayHour <= Weekend.WORK_HOUR_AM_END) {
-            calHourWorkStart.set(Calendar.HOUR, Weekend.WORK_HOUR_AM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Weekend.WORK_MIN_AM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Weekend.WORK_HOUR_AM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Weekend.WORK_MIN_AM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Weekend.SHORT_PAUSE_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Weekend.WORK_HOUR_AM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Weekend.WORK_MIN_AM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Weekend.WORK_HOUR_AM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Weekend.WORK_MIN_AM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Weekend.SHORT_PAUSE_HOUR_AM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Weekend.SHORT_PAUSE_MIN_AM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Weekend.SHORT_PAUSE_HOUR_AM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Weekend.SHORT_PAUSE_HOUR_AM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Weekend.SHORT_PAUSE_MIN_AM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Weekend.LONG_PAUSE_HOUR_AM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Weekend.LONG_PAUSE_HOUR_AM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Weekend.LONG_PAUSE_MIN_AM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Weekend.LONG_PAUSE_HOUR_AM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Weekend.LONG_PAUSE_HOUR_AM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Weekend.LONG_PAUSE_MIN_AM_END);
         } else {
-            calHourWorkStart.set(Calendar.HOUR, Weekend.WORK_HOUR_PM_START);
-            calHourWorkStart.set(Calendar.MINUTE, Weekend.WORK_MIN_PM_START);
-            calHourWorkEnd.set(Calendar.HOUR, Weekend.WORK_HOUR_PM_END);
-            calHourWorkEnd.set(Calendar.MINUTE, Weekend.WORK_MIN_PM_END);
-            calHourShortPauseStart.set(Calendar.HOUR, Weekend.SHORT_PAUSE_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.HOUR_OF_DAY, Weekend.WORK_HOUR_PM_START);
+            calHourPlanningStart.set(Calendar.MINUTE, Weekend.WORK_MIN_PM_START);
+            calHourPlanningEnd.set(Calendar.HOUR_OF_DAY, Weekend.WORK_HOUR_PM_END);
+            calHourPlanningEnd.set(Calendar.MINUTE, Weekend.WORK_MIN_PM_END);
+            calHourShortPauseStart.set(Calendar.HOUR_OF_DAY, Weekend.SHORT_PAUSE_HOUR_PM_START);
             calHourShortPauseStart.set(Calendar.MINUTE, Weekend.SHORT_PAUSE_MIN_PM_START);
-            calHourShortPauseEnd.set(Calendar.HOUR, Weekend.SHORT_PAUSE_HOUR_PM_END);
+            calHourShortPauseEnd.set(Calendar.HOUR_OF_DAY, Weekend.SHORT_PAUSE_HOUR_PM_END);
             calHourShortPauseEnd.set(Calendar.MINUTE, Weekend.SHORT_PAUSE_MIN_PM_END);
-            calHourLongPauseStart.set(Calendar.HOUR, Weekend.LONG_PAUSE_HOUR_PM_START);
+            calHourLongPauseStart.set(Calendar.HOUR_OF_DAY, Weekend.LONG_PAUSE_HOUR_PM_START);
             calHourLongPauseStart.set(Calendar.MINUTE, Weekend.LONG_PAUSE_MIN_PM_START);
-            calHourLongPauseEnd.set(Calendar.HOUR, Weekend.LONG_PAUSE_HOUR_PM_END);
+            calHourLongPauseEnd.set(Calendar.HOUR_OF_DAY, Weekend.LONG_PAUSE_HOUR_PM_END);
             calHourLongPauseEnd.set(Calendar.MINUTE, Weekend.LONG_PAUSE_MIN_PM_END);
         }
-        workHour.setCalHourWorkStart(calHourWorkStart);
-        workHour.setCalHourWorkEnd(calHourWorkEnd);
+        workHour.setCalHourPlanningStart(calHourPlanningStart);
+        workHour.setCalHourPlanningEnd(calHourPlanningEnd);
         workHour.setCalHourShortPauseStart(calHourShortPauseStart);
         workHour.setCalHourShortPauseEnd(calHourShortPauseEnd);
         workHour.setCalHourLongPauseStart(calHourLongPauseStart);
